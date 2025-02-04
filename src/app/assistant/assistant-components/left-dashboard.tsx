@@ -1,15 +1,13 @@
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { mockFiles } from "@/utils/fake-data";
 import { j2s } from "@/utils/helper-functions";
 import { useContext, useEffect, useState } from "react";
 import Markdown from "react-markdown";
 import { AssistantContext } from "../providers";
 import { actions, createAction } from "../reducer";
-import { ClientNewsResponse } from "../utilities";
-import NewsWidget, { NewsItem } from "./client-news";
-import FilesCard from "./files-card";
+import NewsWidget, { NewsItem, NewsWidgetProps } from "./client-news";
 import ChartWidget from "./widget-chart";
+import ExtractionsWidget from "./widget-extractions";
 
 const LeftDashboard = ({
   shown,
@@ -26,7 +24,7 @@ const LeftDashboard = ({
   isLoading: boolean;
   toggleDashboard: () => void;
   generalInfo?: string;
-  clientNews?: ClientNewsResponse;
+  clientNews?: NewsWidgetProps;
   sectorNews?: NewsItem[];
   clientName: string;
 }) => {
@@ -123,28 +121,19 @@ const LeftDashboard = ({
                 </div>
               </div>
             </div>
-            <div className="h-[400px] flex-1">
-              {clientNews &&
-                clientNews.map((data) => {
-                  return (
-                    <NewsWidget
-                      key={data.question}
-                      isLoadingNews={false}
-                      news={data.responses}
-                      widgetTitle={data.question}
-                      className="w-full h-[200px]"
-                    />
-                  );
-                })}
+            <div className="flex-1">
+              {clientNews?.newsResponse && (
+                <NewsWidget
+                  isLoadingNews={clientNews.isLoadingNews}
+                  newsResponse={clientNews.newsResponse}
+                  widgetTitle={clientNews.widgetTitle}
+                  className="max-h-[400px]"
+                />
+              )}
             </div>
           </section>
           <section className="flex gap-4">
-            <NewsWidget
-              isLoadingNews={false}
-              news={sectorNews}
-              widgetTitle="Notícias do Setor"
-              className="w-[300px] h-[400px]"
-            />
+            <ExtractionsWidget extractions={state.clientExtractions} />
             <div className="widget-container w-[300px] h-[300px] card transition-all duration-500">
               <ChartWidget />
             </div>

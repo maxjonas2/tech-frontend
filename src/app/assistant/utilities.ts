@@ -49,7 +49,12 @@ export type ClientNewsResponse = {
   question: string;
   engine: string;
   responses: NewsItem[];
-}[];
+};
+
+export type InformationExtraction = {
+  question: string;
+  information: { [k: string]: string | string[] } | string;
+};
 
 // This is specific to calling the /message endpoint, which directly sends a user message to the model
 const handleMessageRequest: HandleMessageRequest = async (
@@ -171,6 +176,7 @@ async function fetchClientInfo(
 
   dispatch(createAction(actions.SET_LEFT_PANEL_LOADING, false));
   dispatch(createAction(actions.SET_LEFT_DASHBOARD_SHOWN, true));
+  dispatch(createAction(actions.SET_LEFT_DASHBOARD_WIDGETS_SHOWN, true));
 
   // Fetching extractions
   fetch(urlExtractions)
@@ -182,7 +188,15 @@ async function fetchClientInfo(
       return response.json();
     })
     .then((data) => {
-      dispatch(createAction(actions.SET_CLIENT_EXTRACTIONS, data));
+      if (data && "extracted_data" in data) {
+        console.log("From dispatcher, extractions:", data["extracted_data"]);
+        const cleanedExtractions = data["extracted_data"].filter(
+          (extraction: Object) => Object.keys(extraction).length > 0
+        );
+        dispatch(
+          createAction(actions.SET_CLIENT_EXTRACTIONS, cleanedExtractions)
+        );
+      }
     })
     .catch(console.error);
 
@@ -197,8 +211,9 @@ async function fetchClientInfo(
       }
       return response.json();
     })
-    .then((data: ClientNewsResponse) => {
+    .then((data: ClientNewsResponse[]) => {
       dispatch(createAction(actions.SET_CLIENT_NEWS, data));
+      // console.log("From dispatcher, news:", data);
     })
     .catch(console.error);
 

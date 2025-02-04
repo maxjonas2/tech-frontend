@@ -1,5 +1,5 @@
 import { NewsItem } from "./assistant-components/client-news";
-import { ClientNewsResponse, MessageSuggestion } from "./utilities";
+import { ClientNewsResponse, InformationExtraction, MessageSuggestion } from "./utilities";
 
 // Define the shape of your state
 export interface State {
@@ -22,9 +22,9 @@ export interface State {
   portNumber: string;
   chatSuggestions: MessageSuggestion[];
   clientGeneralInfo: string;
-  clientNews: ClientNewsResponse;
+  clientNews: ClientNewsResponse[];
   sectorNews: NewsItem[] | any;
-  clientExtractions: any;
+  clientExtractions: InformationExtraction[];
 }
 
 // Define action types

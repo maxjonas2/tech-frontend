@@ -251,7 +251,11 @@ export default function AssistantContainer() {
         isLoading={state.isLeftPanelLoading}
         clientName={state.client}
         shown={state.leftDashboardShown}
-        clientNews={state.clientNews}
+        clientNews={{
+          isLoadingNews: false,
+          widgetTitle: "Customer News",
+          newsResponse: state.clientNews,
+        }}
         sectorNews={state.sectorNews}
         generalInfo={state.summarizedInfo}
         widgetsShown={state.leftDashboardWidgetsShown}
